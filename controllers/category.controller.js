@@ -1,11 +1,11 @@
-const category = require('../models/index').category;
-const User = require('../models/index').User;
-
+const Category = require('../models/index').Category;
 
 exports.addcategory = async (req, res, next) => {
+    const { type } = req.body;
+    console.log(`tyoe : ${type}`);
 
-    category.create({
-        type: req.body,
+    Category.create({
+        type: type,
         user_id: req.id
     }).then(result => {
         res.status(201).send({

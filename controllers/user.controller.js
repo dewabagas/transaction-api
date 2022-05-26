@@ -13,7 +13,7 @@ exports.register = async (req, res) => {
     }).then(user => {
         if (user) {
             return res.status(400).send({
-                message: 'Email already exist'
+                message: 'Email or Username already exist'
             })
         }
 
