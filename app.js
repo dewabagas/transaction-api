@@ -9,8 +9,8 @@ const categoryRoutes = require("./routes/category")
 
 app.use(express.json())
 app.use('/users', userRoutes)
-app.use('/product', productRoutes)
-app.use('/category', categoryRoutes)
+app.use('/products', productRoutes)
+app.use('/categories', categoryRoutes)
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)

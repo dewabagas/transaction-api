@@ -1,4 +1,5 @@
 const Category = require('../models/index').Category;
+const Product = require('../models/index').Product;
 
 exports.addcategory = async (req, res, next) => {
     const { type } = req.body;
@@ -22,14 +23,13 @@ exports.addcategory = async (req, res, next) => {
 }
 
 exports.getcategory = async (req, res, next) => {
-    category.findAll({
+    Category.findAll({
         include: [{
             model: Product,
             as: 'products',
             attributes: ['id', 'tittle', 'price', 'stock', 'category_id', 'createdAt', 'updatedAt']
         },
         ],
-        where: { id: req.id },
     }).then(result => {
         res.status(200).send({
             status: "SUCCESS",
@@ -38,7 +38,7 @@ exports.getcategory = async (req, res, next) => {
     }).catch(error => {
         res.status(503).send({
             status: "FAILED",
-            message: "failed load photo"
+            message: "failed load category"
         })
     })
 }
