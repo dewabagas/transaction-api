@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     sold_product_amount: DataTypes.INTEGER
   }, {
     hooks: {
-      beforeValidate: (category, options) => {
+      afterCreate: (category, options) => {
         category.sold_product_amount = 0;
       },
     },

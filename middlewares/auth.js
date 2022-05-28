@@ -9,7 +9,7 @@ const verify = async (req, res, next) => {
                 err: 'Token is Not Valid'
             })
         }
-        req.id = decoded.id;
+        req.user = decoded;
 
         next();
     });

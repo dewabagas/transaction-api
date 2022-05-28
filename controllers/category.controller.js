@@ -6,7 +6,7 @@ exports.addCategory = async (req, res, next) => {
 
     Category.create({
         type: type,
-        user_id: req.id
+        user_id: req.user.id
     }).then(result => {
         res.status(201).send({
             status: "SUCCESS",
