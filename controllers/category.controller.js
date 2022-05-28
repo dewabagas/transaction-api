@@ -1,9 +1,8 @@
 const Category = require('../models/index').Category;
 const Product = require('../models/index').Product;
 
-exports.addcategory = async (req, res, next) => {
+exports.addCategory = async (req, res, next) => {
     const { type } = req.body;
-    console.log(`tyoe : ${type}`);
 
     Category.create({
         type: type,
@@ -22,18 +21,17 @@ exports.addcategory = async (req, res, next) => {
     })
 }
 
-exports.getcategory = async (req, res, next) => {
+exports.getCategory = async (req, res, next) => {
     Category.findAll({
         include: [{
             model: Product,
             as: 'products',
-            attributes: ['id', 'tittle', 'price', 'stock', 'category_id', 'createdAt', 'updatedAt']
         },
         ],
     }).then(result => {
         res.status(200).send({
             status: "SUCCESS",
-            Photos: result
+            Categories: result
         })
     }).catch(error => {
         res.status(503).send({
@@ -43,66 +41,68 @@ exports.getcategory = async (req, res, next) => {
     })
 }
 
-exports.updatecategoryById = async (req, res, next) => {
+exports.updateCategoryById = async (req, res, next) => {
     const { type } = req.body;
-    category.findOne({
-        where: {
-            id: req.params.category_id
-        }
-    }).then(result => {
-        if (req.id != result.userid) {
-            return res.status(403).send({
-                err: 'Forbidden'
-            })
-        }
-
-        category.update({
-            type: req.body,
-        }, {
-            where: {
-                id: req.params.category_id
-            }
-        }).then(result => {
-            res.status(200).send({
-                status: "SUCCESS",
-                message: "Category has been successfully updated",
-                category: result
-            })
-        }).catch(error => {
-            res.status(503).send({
-                status: "FAILED",
-                message: "failed update"
-            })
-        })
-    })
-}
-
-exports.deletecategory = async (req, res, next) => {
-    category.findOne({
+    Category.findOne({
         where: {
             id: req.params.categoryid
         }
     }).then(result => {
-        if (req.id != result.user_id) {
-            res.status(403).send({
-                err: "Forbidden"
+        if (result) {
+            Category.update({
+                type: type,
+            }, {
+                where: {
+                    id: req.params.categoryid
+                }
+            }).then(result => {
+                res.status(200).send({
+                    status: "SUCCESS",
+                    message: "Category has been successfully updated",
+                    category: result
+                })
+            }).catch(error => {
+                res.status(503).send({
+                    status: "FAILED",
+                    message: "failed update"
+                })
+            })
+        } else {
+            res.status(404).send({
+                status: "FAILED",
+                message: "Not Found"
             })
         }
+    })
+}
 
-        category.destroy({
-            where: {
-                id: req.params.categoryid
-            }
-        }).then(result => {
-            res.status(200).send({
-                status: "SUCCESS",
-                message: "Category has been successfully deleted"
+exports.deleteCategory = async (req, res, next) => {
+    Category.findOne({
+        where: {
+            id: req.params.categoryid
+        }
+    }).then(result => {
+        if (result) {
+            Category.destroy({
+                where: {
+                    id: req.params.categoryid
+                }
+            }).then(result => {
+                res.status(200).send({
+                    status: "SUCCESS",
+                    message: "Category has been successfully deleted"
+                })
+            }).catch(error => {
+                res.status(503).send({
+                    status: "FAILED",
+                    message: "failed delete"
+                })
             })
-        }).catch(error => {
-            res.status(503).send({
+        } else {
+            res.status(404).send({
                 status: "FAILED",
-                message: "failed delete"
+                message: "Not Found"
             })
-        })
+        }
     })
 }
