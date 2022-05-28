@@ -72,13 +72,31 @@ exports.addTransaction = async (req, res) => {
 
 }
 
-exports.getTransactionUser = async (req, res) => {
+exports.getTransactionsUser = async (req, res) => {
     TransactionHistory.findAll({
+        include: [
+            {
+                model: Product,
+                as: 'product',
+            },
+            {
+                model: User,
+                as: 'user',
+            },
+        ],
         where: { userid: req.user.id }
     }).then(result => {
         res.status(200).send({
             status: "SUCCESS",
-            tra: result
+            transactionHistories: result,
         })
     })
+}
+
+exports.getTransactionsAdmin = async (req, res) => {
+
+}
+
+exports.getTransaction = async (req, res) => {
+
 }
