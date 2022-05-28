@@ -78,29 +78,30 @@ exports.editProduct = async (req, res) => {
 }
 
 exports.editProductCategory = async (req, res) => {
-    const { category_id } = req.body;
+    const { categoryid } = req.body;
 
-    Products.findOne({
+    Product.findOne({
         where: {
-            id: req.params.product_id
+            id: req.params.productid
         }
     }).then(result => {
-        if (req.id != result.userid) {
-            return res.status(403).send({
-                err: 'Forbidden'
+        if(!result) {
+            res.status(404).send({
+                status: "FAILED",
+                message: "Product not found"
             })
         }
 
-        Products.update({
-            category_id: category_id
+        Product.update({
+            categoryid: categoryid
         }, {
             where: {
-                id: req.params.product_id
+                id: req.params.productid
             }
         }).then(result => {
             res.status(200).send({
                 status: "SUCCESS",
-                message: "Product has been successfully updated",
+                message: "Product Category has been successfully updated",
                 Products: result
             })
 

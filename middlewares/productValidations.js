@@ -21,7 +21,7 @@ exports.validateProduct_update = (req, res, next) => {
 
 exports.validateProduct_patch = (req, res, next) => {
     const schema = joi.object().keys({
-        id: joi.number().required(),
+        categoryid: joi.number().required(),
     });
     if (schema.validate(req.body).error) {
         res.json({ error: schema.validate(req.body).error.message });
