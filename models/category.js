@@ -11,14 +11,24 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      this.hasMany(models.Product, {
+        foreignKey: 'categoryid',
+        as: 'products',
+      })
     }
   }
   Category.init({
     type: DataTypes.STRING,
     sold_product_amount: DataTypes.INTEGER
   }, {
+    hooks: {
+      beforeValidate: (category, options) => {
+        category.sold_product_amount = 0;
+      },
+    },
     sequelize,
     modelName: 'Category',
   });
+  
   return Category;
 };

@@ -2,10 +2,10 @@ const joi = require('joi');
 
 exports.validateProduct = (req, res, next) => {
     const schema = joi.object().keys({
-        tittle: joi.string().required(),
+        title: joi.string().required(),
         price: joi.number().min(0).max(50000000).required(),
         stock: joi.number().min(5).required(),
-        category_id: joi.number().required(),
+        categoryid: joi.number().required(),
     });
     if (schema.validate(req.body).error) {
         res.json({ error: schema.validate(req.body).error.message });
@@ -21,7 +21,7 @@ exports.validateProduct_update = (req, res, next) => {
 
 exports.validateProduct_patch = (req, res, next) => {
     const schema = joi.object().keys({
-        id: joi.number().required(),
+        categoryid: joi.number().required(),
     });
     if (schema.validate(req.body).error) {
         res.json({ error: schema.validate(req.body).error.message });

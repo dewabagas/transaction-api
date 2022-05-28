@@ -1,21 +1,20 @@
-const Products = require('../models/index').Products;
+const Product = require('../models/index').Product;
 const User = require('../models/index').User;
 
 
-exports.addProduct = async (req, res, next) => {
-    const { title, price, stock, category_id } = req.body;
+exports.addProduct = async (req, res) => {
+    const { title, price, stock, categoryid } = req.body;
 
-    Products.create({
+    Product.create({
         title: title,
         price: price,
         stock: stock,
-        category_id: category_id,
-        user_id: req.id
+        categoryid: categoryid,
     }).then(result => {
         res.status(201).send({
             status: "SUCCESS",
             message: "Product has been successfully created",
-            Products: result
+            product: result
         })
     }).catch(error => {
         res.status(503).send({
@@ -25,9 +24,8 @@ exports.addProduct = async (req, res, next) => {
     })
 }
 
-exports.getProduct = async (req, res, next) => {
-    Products.findAll({
-        where: { id: req.id },
+exports.getProduct = async (req, res) => {
+    Product.findAll({
     }).then(result => {
         res.status(200).send({
             status: "SUCCESS",
@@ -41,21 +39,22 @@ exports.getProduct = async (req, res, next) => {
     })
 }
 
-exports.editProduct = async (req, res, next) => {
+exports.editProduct = async (req, res) => {
     const { title, price, stock } = req.body;
+    console.log(`params : ${req.params}`)
 
-    Products.findOne({
+    Product.findOne({
         where: {
-            id: req.params.product_id
+            id: req.params.productid
         }
     }).then(result => {
-        if (req.id != result.userid) {
-            return res.status(403).send({
-                err: 'Forbidden'
+        if(!result) {
+            res.status(404).send({
+                status: "FAILED",
+                message: "Product not found"
             })
         }
-
-        Products.update({
+        Product.update({
             title: title,
             price: price,
             stock: stock
@@ -78,30 +77,31 @@ exports.editProduct = async (req, res, next) => {
     })
 }
 
-exports.updateProductById = async (req, res, next) => {
-    const { category_id } = req.body;
+exports.editProductCategory = async (req, res) => {
+    const { categoryid } = req.body;
 
-    Products.findOne({
+    Product.findOne({
         where: {
-            id: req.params.product_id
+            id: req.params.productid
         }
     }).then(result => {
-        if (req.id != result.userid) {
-            return res.status(403).send({
-                err: 'Forbidden'
+        if(!result) {
+            res.status(404).send({
+                status: "FAILED",
+                message: "Product not found"
             })
         }
 
-        Products.update({
-            category_id: category_id
+        Product.update({
+            categoryid: categoryid
         }, {
             where: {
-                id: req.params.product_id
+                id: req.params.productid
             }
         }).then(result => {
             res.status(200).send({
                 status: "SUCCESS",
-                message: "Product has been successfully updated",
+                message: "Product Category has been successfully updated",
                 Products: result
             })
 
@@ -114,7 +114,7 @@ exports.updateProductById = async (req, res, next) => {
     })
 }
 
-exports.deleteProduct = async (req, res, next) => {
+exports.deleteProduct = async (req, res) => {
     Products.findOne({
         where: {
             id: req.params.productid
