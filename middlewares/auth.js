@@ -28,6 +28,20 @@ const authorization = async (req, res, next) => {
     });
 }
 
+const verifyAdmin = async (req, res, next) => {
+    const token = req.headers["token"]
+    jwt.verify(token, privateKey, (err, decoded) => {
+        console.log('decoded', decoded);
+
+        if(decoded.role != 1) {
+            return res.status(403).send({
+                err: 'Forbidden, Admin Only'
+            })
+        }
+        next();
+    })
+}
+
 const generateToken = (payload) => {
     return jwt.sign(payload, privateKey, {
         algorithm: 'HS256',
@@ -38,6 +52,7 @@ const generateToken = (payload) => {
 module.exports = {
     generateToken,
     verify,
-    authorization
+    authorization,
+    verifyAdmin
 };
 

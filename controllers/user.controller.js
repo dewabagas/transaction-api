@@ -78,10 +78,9 @@ exports.login = async (req, res) => {
             id: user.id,
             full_name: user.full_name,
             email: user.email,
-            username: user.username,
-            profile_image_url: user.profile_image_url,
-            age: user.age,
-            phone_number: user.phone_number,
+            gender: user.gender,
+            role: user.role,
+            balance: user.balance,
         })
         res.status(200).send({
             status: 'SUCCESS',
