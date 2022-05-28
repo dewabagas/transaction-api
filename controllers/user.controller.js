@@ -137,7 +137,7 @@ exports.deleteUser = async (req, res) => {
             User.destroy({ where: { id: req.params.userId } }).then(user => {
                 res.status(200).send({
                     status: 'SUCCESS',
-                    message: 'User Deleted',
+                    message: 'Your account has been successfully deleted',
                     result: user
                 })
             })
@@ -153,5 +153,40 @@ exports.deleteUser = async (req, res) => {
             message: `${error}`
         })
     })
+}
 
+exports.topupBalance = async (req, res) => {
+    const { balance } = req.body;
+    User.findOne({
+        where: {
+            id: req.params.userId
+        }
+    }).then(result => {
+        var currentBalance = balance + result.balance
+        console.log(`current blance ${currentBalance}`)
+        if (result) {
+            User.update({
+                balance: currentBalance
+            }, {
+                where: {
+                    id: req.params.userId
+                }
+            }).then(result => {
+                res.status(200).send({
+                    status: "SUCCESS",
+                    message: `Your balance has been successfully updated to Rp. ${currentBalance}`,
+                })
+            }).catch(err => {
+                res.status(503).send({
+                    status: "FAILED",
+                    message: "failed update"
+                })
+            })
+        } else {
+            res.status(404).send({
+                status: "FAILED",
+                message: "User not found"
+            })
+        }
+    })
 }

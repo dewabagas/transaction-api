@@ -40,3 +40,14 @@ exports.validateUserUpdate = async (req, res, next) => {
         next();
     }
 };
+
+exports.validateTopup = async (req, res, next) => {
+    const schema = Joi.object().keys({
+        balance: Joi.number().min(10000).max(50000000).required(),
+    });
+    if (schema.validate(req.body).error) {
+        res.json({ error: schema.validate(req.body).error.message });
+    } else {
+        next();
+    }
+}
