@@ -94,9 +94,49 @@ exports.getTransactionsUser = async (req, res) => {
 }
 
 exports.getTransactionsAdmin = async (req, res) => {
-
+    TransactionHistory.findAll({
+        include: [
+            {
+                model: Product,
+                as: 'product',
+            },
+            {
+                model: User,
+                as: 'user',
+            },
+        ],
+    }).then(result => {
+        res.status(200).send({
+            status: "SUCCESS",
+            transactionHistories: result,
+        })
+    })
 }
 
 exports.getTransaction = async (req, res) => {
+    TransactionHistory.findOne({
+        include: {
+            model: Product,
+            as: 'product'
+        },
+        where: {id : req.params.transactionid }
+    }).then(result => {
+        if(result) {
+            res.status(200).send({
+                status: "SUCCESS",
+                transaction: result,
+            })
+        } else {
+            res.status(404).send({
+                status: "FAILED",
+                message: "Not Found"
+            })
+        }
+    }).catch(err => {
+        res.status(503).send({
+            status: "FAILED",
+            message: "Failed load transaction"
+        })
+    })
 
 }
