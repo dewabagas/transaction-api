@@ -4,7 +4,7 @@ const User = require("../models/index").User;
 const { generateToken } = require("../middlewares/auth");
 
 exports.register = async (req, res) => {
-    const { full_name, email, username, password, profile_image_url, age, phone_number } = req.body;
+    const { full_name, email, password, gender, role, balance } = req.body;
 
     User.findOne({
         where: {
@@ -22,20 +22,18 @@ exports.register = async (req, res) => {
         User.create({
             full_name: full_name,
             email: email,
-            username: username,
             password: hash,
-            profile_image_url: profile_image_url,
-            age: age,
-            phone_number: phone_number,
+            gender: gender,
+            role: role,
+            balance: balance,
         }).then(user => {
             const token = generateToken({
                 id: user.id,
                 full_name: user.full_name,
                 email: user.email,
-                username: user.username,
-                profile_image_url: user.profile_image_url,
-                age: user.age,
-                phone_number: user.phone_number,
+                gender: user.gender,
+                role: user.role,
+                balance: user.balance,
             })
 
             res.status(201).send({
@@ -94,23 +92,16 @@ exports.login = async (req, res) => {
 }
 
 exports.editUser = async (req, res) => {
-    const { full_name, email, username, password, profile_image_url, age, phone_number } = req.body;
+    const { full_name, email } = req.body;
 
     User.findOne({
         where: { id: req.params.userId },
     }).then(result => {
         if (result) {
-            const salt = bcrypt.genSaltSync(10)
-            const hash = bcrypt.hashSync(password, salt)
 
             User.update({
                 full_name: full_name,
                 email: email,
-                username: username,
-                password: hash,
-                profile_image_url: profile_image_url,
-                age: age,
-                phone_number: phone_number,
             }, {
                 where: { id: req.params.userId }
             }).then(user => {
