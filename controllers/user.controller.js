@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const db = require("../config/db");
 const User = require("../models/index").User;
 const { generateToken } = require("../middlewares/auth");
+const { rupiahFormat } = require("../utils/textUtils");
 
 exports.register = async (req, res) => {
     const { full_name, email, password, gender, role, balance } = req.body;
@@ -78,10 +79,9 @@ exports.login = async (req, res) => {
             id: user.id,
             full_name: user.full_name,
             email: user.email,
-            username: user.username,
-            profile_image_url: user.profile_image_url,
-            age: user.age,
-            phone_number: user.phone_number,
+            gender: user.gender,
+            role: user.role,
+            balance: user.balance,
         })
         res.status(200).send({
             status: 'SUCCESS',
@@ -163,7 +163,6 @@ exports.topupBalance = async (req, res) => {
         }
     }).then(result => {
         var currentBalance = balance + result.balance
-        console.log(`current blance ${currentBalance}`)
         if (result) {
             User.update({
                 balance: currentBalance
@@ -174,7 +173,7 @@ exports.topupBalance = async (req, res) => {
             }).then(result => {
                 res.status(200).send({
                     status: "SUCCESS",
-                    message: `Your balance has been successfully updated to Rp. ${currentBalance}`,
+                    message: `Your balance has been successfully updated to Rp. ${rupiahFormat(currentBalance)}`,
                 })
             }).catch(err => {
                 res.status(503).send({
